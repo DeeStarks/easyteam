@@ -1,6 +1,6 @@
 import Order from '../models/orderModel';
 import { fetchShopifyData } from './shopifyService';
-import { calculateCommission } from '../utils/commissionCalculator';
+import { CommissionCalculator } from './commissionCalculator';
 
 export const getAllOrders = async () => {
   return await Order.find();
@@ -17,9 +17,10 @@ export const syncOrders = async () => {
   }));
 
   // calculating commission for each order
+  const calculator = new CommissionCalculator();
   orders = orders.map(order => ({
     ...order,
-    commission: calculateCommission(order, orders)
+    commission: calculator.calculate(order, orders)
   }));
 
   // inserting only new orders

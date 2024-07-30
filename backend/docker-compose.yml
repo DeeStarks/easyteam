@@ -13,6 +13,7 @@ services:
       - ./src:/usr/src/app/src
     depends_on:
       - mongo
+      - redis
     restart: always
 
   sync-service:
@@ -25,6 +26,7 @@ services:
       - .env
     depends_on:
       - backend
+      - redis
     restart: always
 
   mongo:
@@ -36,7 +38,12 @@ services:
       - mongo-data:/data/db
     restart: always
 
+  redis:
+    container_name: easyteam-assessment-redis
+    image: redis:7.0.8
+    ports:
+      - "6379:6379"
+    restart: always
 
 volumes:
   mongo-data:
-
