@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  backend:
+    container_name: easyteam-assessment-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    network_mode: host
+    volumes:
+      - ./src:/usr/src/app/src
+    depends_on:
+      - mongo
+    restart: always
+
+  sync-service:
+    container_name: easyteam-assessment-sync-service
+    build:
+      context: ./services/sync
+      dockerfile: Dockerfile
+    network_mode: host
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    restart: always
+
+  mongo:
+    container_name: easyteam-assessment-mongo
+    image: mongo:7.0.12
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: always
+
+
+volumes:
+  mongo-data:
+
